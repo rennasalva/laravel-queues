@@ -1,0 +1,55 @@
+<VirtualHost *:${port}>
+
+    # include the folder containing the vhost aliases for zend server deployment
+    #IncludeOptional "${aliasdir}/*.conf"
+    # DocumentRoot should always be set to ${docroot}
+    # The value for ${docroot} is defined by Zend deployment daemon
+    # You can use the placeholder ${docroot} in different directives
+
+    DocumentRoot "${docroot}"
+    <Directory "${docroot}">
+
+        Options -Indexes -FollowSymLinks +SymLinksIfOwnerMatch -MultiViews 
+
+        DirectoryIndex index.html
+
+        Order allow,deny
+
+        Allow from all
+
+		#php_admin_value engine Off
+
+		AddType text/plain .php
+
+        AllowOverride none
+
+        Require all granted
+
+        <LimitExcept POST GET PUT DELETE>
+            Deny from all
+        </LimitExcept>
+    </Directory>
+
+
+
+    ServerName ${vhost}:${port}
+
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+    Header set X-Powered-By "UQU Portal Team"
+
+    Header set X-Platform "UQU EvoCMS Portal"
+
+    Header always set Content-Security-Policy "default-src 'self' *.uqu.edu.sa *.google.com *.googleapis.com *.google-analytics.com *.gstatic.com *.youtube.com *.twitter.com 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' *.uqu.edu.sa *.google-analytics.com *.google.com *.gstatic.com *.googleapis.com *.twimg.com *.flagcounter.com data: blob: https:"
+
+    Header always set Access-Control-Allow-Origin "https://uqu.edu.sa"
+
+    Header always set Strict-Transport-Security "max-age=63072000"
+
+    #Header always set X-Frame-Options SAMEORIGIN
+
+    Header always set X-Frame-Options "allow-from https://*.uqu.edu.sa/"
+
+    Header always set X-Content-Type-Options nosniff
+
+</VirtualHost>

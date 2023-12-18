@@ -1,0 +1,62 @@
+
+# Created by Zend Server
+<VirtualHost *:${port}>
+    # include the folder containing the vhost aliases for zend server deployment
+    #IncludeOptional "${aliasdir}/*.conf"
+    
+    # DocumentRoot should always be set to ${docroot}
+    # The value for ${docroot} is defined by Zend deployment daemon
+    # You can use the placeholder ${docroot} in different directives
+    DocumentRoot "${docroot}"
+    ProxyPassMatch "^/(.*.php(/.*)?)$" "unix:///usr/local/zend/tmp/php-fpm.sock|fcgi://localhost${docroot}"
+    <Directory "${docroot}">
+        Options -Indexes -FollowSymLinks +SymLinksIfOwnerMatch -MultiViews
+        DirectoryIndex index.php
+        Order allow,deny
+        Allow from all
+        AllowOverride none
+        Require all granted
+
+		<LimitExcept POST GET PUT DELETE>
+			Deny from all
+		</LimitExcept>
+		
+		<IfModule mod_rewrite.c>
+			RewriteEngine On
+			RewriteBase /
+
+			# Redirect if index.php is in the URL
+			RewriteRule ^index.php/(.+) /$1 [R=301,L]
+			
+			# Exclude Directory
+			RewriteRule ^(packages|assets|uploads|uqu-server-status)($|/) - [L]
+
+			#RewriteRule ^(.*/)?index\.php/?(.*)$ https://uqu.edu.sa/$2 [R=301,NC,L]
+
+			RewriteCond %{HTTP_HOST} ^www\.uqu\.edu\.sa
+			RewriteRule ^(.*)$ https://uqu.edu.sa/$1 [R=permanent,L]
+
+
+			# Redirect Trailing Slashes If Not A Folder...
+			RewriteCond %{REQUEST_FILENAME} !-d
+			RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+			# Handle Front Controller...
+			RewriteCond %{REQUEST_FILENAME} !-d
+			RewriteCond %{REQUEST_FILENAME} !-f
+			RewriteRule ^ evoStart.php [L]
+		</IfModule>
+    </Directory>
+
+    ServerName ${vhost}:${port}
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+	
+    Header set X-Powered-By "UQU Portal Team"
+    Header set X-Platform "UQU EvoCMS Portal"
+    Header always set Content-Security-Policy "default-src 'self' *.uqu.edu.sa *.google.com *.googleapis.com *.google-analytics.com *.gstatic.com *.youtube.com *.twitter.com 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' *.uqu.edu.sa *.google-analytics.com *.google.com *.gstatic.com *.googleapis.com *.twimg.com *.flagcounter.com data: blob: https:"
+    Header always set Access-Control-Allow-Origin "https://uqu.edu.sa"
+    Header always set Strict-Transport-Security "max-age=63072000"
+    #Header always set X-Frame-Options SAMEORIGIN
+    Header always set X-Frame-Options "allow-from https://*.uqu.edu.sa/"
+    Header always set X-Content-Type-Options nosniff
+</VirtualHost>

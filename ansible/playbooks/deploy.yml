@@ -1,0 +1,244 @@
+---
+- hosts: [dev1,dev2,dev3]
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  vars:
+    - user: remote_user
+    - home: /home/remote_user   
+    - workspace: ''
+    - build: ''
+    - document_root: '/document_root'
+    - document_root_cli: '/document_root'
+    - document_root_static: '/document_root_static'
+  tasks:
+    - name: utente e home corrente
+      debug:
+        msg: "Username: {{ user }}, Home dir: {{ home }}"
+    
+    # - name: Check if file already exists
+    #   command: ls /home/{{ user }}/myfile
+    #   register: file_exists
+    #   ignore_errors: yes
+
+    # - name: create file for user
+    #   copy:
+    #     dest: "/home/{{ user }}/myfile"
+    #     content: |
+    #       line 01
+    #       line 02
+    #   when: file_exists is failed
+
+    # - name: show message if file exists
+    #   debug:
+    #     msg: The user file already exists.
+    #   when: file_exists is succeeded
+
+    # - name: Create a bz2 archive of a globbed path, while excluding specific dirnames
+    #   community.general.archive:
+    #     path:
+    #     - /app*
+    #     dest:  /home/{{ user }}/app.tar.bz2
+    #     exclude_path:
+    #     - /app/.DS_Store
+    #     - /app/.laminas-ci
+    #     format: bz2
+    
+    # - name: Check if zip already exists
+    #   command: ls /home/{{ user }}/app.tar.bz2
+    #   register: file_tar_exists
+    #   ignore_errors: yes
+
+    - name: Ansible check directory.
+      stat:
+        path: /ZendPhp/Deployment
+      register: my_folder
+    
+    - name: "echo if directory already existed"
+      debug:
+        msg: "the jboss directory is already existed"
+      when: my_folder.stat.exists  
+
+    - name: "Ansible Create directory if not exists"
+      file:
+        path: /ZendPhp/Deployment
+        state: directory
+        mode: 0755
+        group: root
+        owner: root
+      when: my_folder.stat.exists == false 
+
+    - name: Check if zip already exists
+      command: ls /tmp/app.zip 
+      register: file_exists
+      ignore_errors: yes
+
+    - name: Copy build on remote server
+      ansible.builtin.file:
+        path: /tmp/app.zip
+        state: absent
+      when: file_exists is succeeded
+
+    - name: Copy build on remote server
+      ansible.builtin.copy:
+        src:  "{{ workspace }}/app.zip"
+        dest: /tmp/app.zip 
+
+    - name: Check if folder app already exists
+      command: rm -fr "/app_{{ build }}"
+      ignore_errors: yes
+         
+
+    - name: Creates Directory
+      ansible.builtin.file:
+        # path: "{{ home }}/app_{{ build }}"
+        path: "/ZendPhp/Deployment/app_{{ build }}"
+        state: directory
+        mode: 777
+        owner: zendphp
+        group: zendphp
+
+    # - name: Check if zip already exists
+    #   command: mkdir "/app_{{ build }}"
+    #   ignore_errors: yes
+     
+
+    - name: Extract app.zip into /app
+      ansible.builtin.unarchive:
+        src : "/tmp/app.zip" 
+        dest: "/ZendPhp/Deployment/app_{{ build }}"
+        owner: zendphp
+        group: zendphp
+        remote_src: yes
+        
+    - name: Create symbolic link to virtualhost
+      file:
+        src: "/ZendPhp/Deployment/app_{{ build }}"
+        dest: "{{document_root}}"
+        owner: zendphp
+        group: zendphp
+        state: link  
+  # handlers:
+  #   - name: Check HTTP Service Nginx
+  #     uri:
+  #       url:http://{{ansible_default_ipv4.address}}
+  #       status_code: 200
+
+# configure host
+# - hosts: [dev4]
+#   become: yes
+#   gather_facts: yes
+#   vars:
+#     - user: remote_user
+#     - home: /home/remote_user   
+#     - php_version: 7.4
+#     - extension_dir: 20190902
+#     - app_url: laravel.localhost
+#     - ioncube_archive_url: https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+#   tasks:
+#     - name: utente e home corrente
+#       debug:
+#         msg: "Username: {{ user }}, Home dir: {{ home }}"
+
+#     - name: Installing Nginx to the host(s)
+#       apt:
+#         name: nginx
+#         state: present   
+
+#     - name: adding  user www-data to group sudo
+#       user:
+#           name: 'www-data'
+#           group: 'www-data'
+#           shell: /sbin/nologin
+#           create_home: no
+#           groups: 'sudo'
+#           append: yes      
+    
+    
+#     - name: Installing "php{{ php_version }}" packages to the host(s)
+#       apt:
+#         name:
+#           - "php{{ php_version }}-fpm"         
+#           - "php{{ php_version }}-cli"
+#           - "php{{ php_version }}-curl"
+#           - "php{{ php_version }}-mysql"
+#           - "php{{ php_version }}-mbstring"
+#           - "php{{ php_version }}-common"
+#           - "php{{ php_version }}-json"
+#           - "php{{ php_version }}-dev"
+#         state: present    
+    
+#     - name: Creating /var/www/html/ioncube directory
+#       file:
+#         path: /var/www/html/ioncube
+#         state: directory
+#         mode: 0755
+    
+#     - name: Downloading & unarchiving ionCUBE Loader
+#       unarchive:
+#         src: "{{ ioncube_archive_url }}"
+#         dest: /var/www/html/ioncube
+#         remote_src: yes
+#         extra_opts: [--strip-components=1]
+    
+    
+#     - name: Find php extensions directory
+#       shell: php-config --extension-dir
+#       register: php_extensions_dir
+
+#     - name: Copying .so file to php extensions directory {{ php_extensions_dir.stdout }}
+#       shell: cp /var/www/html/ioncube/ioncube_loader_lin_{{ php_version }}.so {{ php_extensions_dir.stdout }}/
+
+#     - name: Upload ionCUBE extension configuration template for php-cli
+#       template: src={{workspace}}/ansible/templates/ioncube-template.tplt dest=/etc/php/{{ php_version }}/cli/conf.d/00-ioncube.ini
+
+#     - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
+#       lineinfile: dest=/etc/php/{{ php_version }}/cli/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
+
+#     - name: Upload ionCUBE extension configuration template for php-fpm
+#       template: src={{workspace}}/ansible/templates/ioncube-template.tplt dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini
+
+#     - name: Setting zend_extension={{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so
+#       lineinfile: dest=/etc/php/{{ php_version }}/fpm/conf.d/00-ioncube.ini regexp='^zend_extension' line="zend_extension = {{ php_extensions_dir.stdout }}/ioncube_loader_lin_{{ php_version }}.so"
+
+#     - name: Configuring nginx virtual host
+#       template: src={{workspace}}/ansible/templates/nginx-template-http.tplt dest=/etc/nginx/sites-available/{{ app_url }}.conf
+#       become: true
+      
+#     - name: Creating link to enable the site
+#       file:
+#         src: /etc/nginx/sites-available/{{ app_url }}.conf
+#         dest: /etc/nginx/sites-enabled/{{ app_url }}.conf
+#         state: link
+#       # become: true
+
+#     - name: Setting server_name={{ app_url }}
+#       lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf regexp='^    server_name' line="    server_name {{ app_url }};"
+
+    
+#     - name: Setting  root=/var/www/html/laravel/public
+#       lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf  regexp='^    root' line="    root /var/www/html/laravel/public;"
+
+    
+#     - name: Setting fastcgi_pass="unix:/var/run/php/php{{ php_version }}-fpm.sock"
+#       lineinfile: dest=/etc/nginx/sites-available/{{ app_url }}.conf regexp='^        fastcgi_pass' line="        fastcgi_pass unix:/var/run/php/php{{ php_version }}-fpm.sock;"
+#       notify:
+#         - Restarting "php{{ php_version }}-fpm"
+#         - Restarting nginx  
+
+
+    # - name: Supervisor conf
+    #   copy: src={{workspace}}/ansible/templates/supervisor.tplt dest=/etc/supervisord.conf
+      # notify: restart supervisord
+
+
+  handlers:
+    # - name: Restarting "php{{ php_version }}-fpm"
+    #   service: name="php{{ php_version }}-fpm" state=restarted
+    #   # become: true
+    # - name: Restarting nginx
+    #   service: name=nginx state=restarted
+    #   # become: true
+      # - name: restart supervisord
+      #   service:  name=supervisord state=restarted
+...   

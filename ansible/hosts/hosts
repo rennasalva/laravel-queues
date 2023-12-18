@@ -1,0 +1,11 @@
+[all:vars]
+
+ansible_connection = ssh
+
+[server]
+
+server1 ansible_host=remote_zend_php ansible_user=remote_user ansible_private_key_file=/var/jenkins_home/ansible/remote-key
+server2 ansible_host=remote_zend_php_2 ansible_user=remote_user   ansible_private_key_file=/var/jenkins_home/ansible/remote-key
+server3 ansible_host=remote_zend_php_3 ansible_user=remote_user  ansible_private_key_file=/var/jenkins_home/ansible/remote-key
+server4 ansible_host=remote-host ansible_user=remote_user  ansible_private_key_file=/var/jenkins_home/ansible/remote-key
+
