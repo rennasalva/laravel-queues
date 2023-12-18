@@ -11,7 +11,7 @@ pipeline {
                 script {
                         git branch: 'main',
                         credentialsId: 'github',
-                        url: 'https://github.com/rennasalva/laravel-queues'
+                        url: 'https://github.com/rennasalva/laravel-queues','branch:master'
             }
         }
      }
