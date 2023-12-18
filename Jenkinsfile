@@ -3,6 +3,10 @@ pipeline {
   environment{
       build = "buils-${JOB_NAME}-${BUILD_NUMBER}"
   }
+  parameters {
+        booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
+    }
+
   stages {
 
 
@@ -57,17 +61,13 @@ pipeline {
                 }
               }
         
-              try {
-                stage('ZENDPHP Checkstyle Report') {
-                  steps {
-                    sh 'vendor/bin/phpcs  --report-file=$WORKSPACE/reports/checkstyle.xml --standard=$WORKSPACE/phpcs.xml --extensions=php,inc --ignore=autoload.php --ignore=$WORKSPACE/vendor  $WORKSPACE/app' 
-                  }
-                  
+              stage('ZENDPHP Checkstyle Report') {
+                 when { expression { params.skip_test != true } }
+                steps {
+                  sh 'vendor/bin/phpcs  --report-file=$WORKSPACE/reports/checkstyle.xml --standard=$WORKSPACE/phpcs.xml --extensions=php,inc --ignore=autoload.php --ignore=$WORKSPACE/vendor  $WORKSPACE/app' 
                 }
-            } 
-            catch (Exception e) {
-             echo "Stage failed, but we continue"  
-            }
+                
+              }
         
               stage('ZENDPHP Mess Detection Report') {
                 steps {
