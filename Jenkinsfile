@@ -9,9 +9,9 @@ pipeline {
      stage('Git Checkout Project') {
             steps {
                 script {
-                        git branch: 'main',
+                        git branch: 'master',
                         credentialsId: 'github',
-                        url: 'https://github.com/rennasalva/laravel-queues','branch:master'
+                        url: 'https://github.com/rennasalva/laravel-queues'
             }
         }
      }
