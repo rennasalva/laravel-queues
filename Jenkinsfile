@@ -70,6 +70,7 @@ pipeline {
               }
         
               stage('ZENDPHP Mess Detection Report') {
+                when { expression { params.skip_test != true } }
                 steps {
                   sh 'vendor/bin/phpmd $WORKSPACE/app xml  $WORKSPACE/phpmd.xml --reportfile $WORKSPACE/reports/pmd.xml --exclude $WORKSPACE/vendor/ --exclude autoload.php'
                 }
