@@ -31,9 +31,9 @@ server {
     location ~ \.php$ {
         fastcgi_pass php-laravel;
         #fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
         fastcgi_param DOCUMENT_ROOT $realpath_root;
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        include fastcgi_params;
     }
  
     location ~ /\.(?!well-known).* {
