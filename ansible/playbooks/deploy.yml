@@ -9,7 +9,7 @@
     - workspace: ''
     - build: ''
   vars_files:
-    - "ansible/vars/nginx.yaml"  
+    - "{{ workspace }}/ansible/vars/nginx.yaml"  
   tasks:
     - name: utente e home corrente
       debug:
