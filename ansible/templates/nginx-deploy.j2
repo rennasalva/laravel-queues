@@ -1,5 +1,5 @@
 # cat default
-upstream php-www {
+upstream php-laravel {
     server 127.0.0.1:9000;
 }
 
@@ -33,14 +33,15 @@ server {
     }
 
     # Try to serve full URI if exists otherwise default to 'index.php'
+    charset utf-8;
+ 
     location / {
-        try_files $uri /index.php?uri=$uri&$args;
+        try_files $uri $uri/ /index.php?$query_string;
     }
-
     # Specify what happens when PHP files are requested
     location ~* \.php$ {
         include fastcgi_params;
-        fastcgi_pass php-www;
+        fastcgi_pass php-laravel;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
     }
