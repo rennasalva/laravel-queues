@@ -8,9 +8,8 @@
     - home: /home/remote_user   
     - workspace: ''
     - build: ''
-    - document_root: '/document_root'
-    - document_root_cli: '/document_root'
-    - document_root_static: '/document_root_static'
+  vars_files:
+    - vars/nginx.yaml  
   tasks:
     - name: utente e home corrente
       debug:
@@ -103,7 +102,21 @@
     #   ignore_errors: yes
      
 
-    - name: Extract app.zip into /app
+    - name: Copy File virtual host on site enable
+      template:
+        src:  "{{ workspace }}/templates/nginx-deploy.j2"
+        dest: "/etc/nginx/sites-available/laravel-vhost" 
+        mode:0644
+    
+    - name: Create symbolic link to virtualhost nnginx
+       file:
+        src: "/etc/nginx/sites-available/laravel-vhost"
+        dest: "/etc/nginx/sites-enabled/laravel-vhost"
+        owner: zendphp
+        group: zendphp
+        state: link  
+
+     - name: Extract app.zip into /app
       ansible.builtin.unarchive:
         src : "/tmp/app.zip" 
         dest: "/ZendPhp/Deployment/app_{{ build }}"
@@ -118,6 +131,10 @@
         owner: zendphp
         group: zendphp
         state: link  
+    
+
+
+
   # handlers:
   #   - name: Check HTTP Service Nginx
   #     uri:
