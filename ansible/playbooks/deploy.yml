@@ -132,6 +132,8 @@
         group: zendphp
         state: link  
     
+    - name: Reload Niginx configuration
+       shell: /etc/init.d/nginx reload
 
 
 
