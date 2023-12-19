@@ -104,7 +104,7 @@
 
     - name: Copy File virtual host on site enable
       template:
-        src:  "{{ workspace }}/templates/nginx-deploy.j2"
+        src:  "{{ workspace }}/ansible/templates/nginx-deploy.j2"
         dest: "/etc/nginx/sites-available/laravel-vhost" 
         mode: 0644
     
