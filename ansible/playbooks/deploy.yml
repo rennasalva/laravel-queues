@@ -106,7 +106,7 @@
       template:
         src:  "{{ workspace }}/templates/nginx-deploy.j2"
         dest: "/etc/nginx/sites-available/laravel-vhost" 
-        mode:0644
+        mode: 0644
     
     - name: Create symbolic link to virtualhost nnginx
        file:
@@ -116,7 +116,7 @@
         group: zendphp
         state: link  
 
-     - name: Extract app.zip into /app
+    - name: Extract app.zip into /app
       ansible.builtin.unarchive:
         src : "/tmp/app.zip" 
         dest: "/ZendPhp/Deployment/app_{{ build }}"
