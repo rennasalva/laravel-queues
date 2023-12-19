@@ -133,7 +133,7 @@
         state: link  
     
     - name: Reload Niginx configuration
-       shell: /etc/init.d/nginx reload
+      shell: /etc/init.d/nginx reload
 
 
 
