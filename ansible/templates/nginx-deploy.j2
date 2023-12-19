@@ -21,10 +21,10 @@ server {
     add_header X-Powered-By "UQU Portal Team";
     add_header X-Platform "UQU EvoCMS Portal"
     add_header Content-Security-Policy "default-src 'self' *.uqu.edu.sa *.google.com *.googleapis.com *.google-analytics.com *.gstatic.com *.youtube.com *.twitter.com 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' *.uqu.edu.sa *.google-analytics.com *.google.com *.gstatic.com *.googleapis.com *.twimg.com *.flagcounter.com data: blob: https:"
-    add_header Access-Control-Allow-Origin "https://uqu.edu.sa"
+    #add_header Access-Control-Allow-Origin "https://uqu.edu.sa"
     add_header Strict-Transport-Security "max-age=63072000"
-    add_header "allow-from https://*.uqu.edu.sa/"
-    charset utf-8;
+    #add_header "allow-from https://*.uqu.edu.sa/"
+
 
     # Error page management
     error_page 404 500 502 503 504 /50x.html;
