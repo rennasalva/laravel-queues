@@ -1,5 +1,5 @@
 ---
-document_root: '/document_root'
+document_root: '/document_root/public'
 document_root_static: '/document_root_static'
 port_number: '80'
 domain: 'laravel.localhost'
