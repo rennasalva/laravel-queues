@@ -153,10 +153,11 @@
         state: link  
 
     
-    - name: Check if static asset  zip already exists
-      command: ls /tmp/asset.zip 
-      register: file_static_exists
-      ignore_errors: yes
+    - name: Check asset.zip in tmp  remote server
+      ansible.builtin.file:
+        path: /tmp/asset.zip
+        state: absent
+      when: file_static_exists is succeeded  
 
 
     - name: Copy asset.zip in tmp on remote server
