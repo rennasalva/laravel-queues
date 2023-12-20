@@ -125,6 +125,7 @@
         path: "/ZendPhp/Deployment/app_{{ build }}"
         owner: zendphp
         group: zendphp
+        recurse: true 
         mode: '0777'
 
         
