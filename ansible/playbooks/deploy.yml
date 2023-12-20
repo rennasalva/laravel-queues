@@ -138,7 +138,7 @@
         state: link  
 
 
-  - name: Copy File virtual host static  on site enable
+    - name: Copy File virtual host static  on site enable
       template:
         src:  "{{ workspace }}/ansible/templates/nginx-deploy-static.j2"
         dest: "/etc/nginx/sites-available/laravel-vhost-static" 
