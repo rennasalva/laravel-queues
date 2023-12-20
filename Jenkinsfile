@@ -39,7 +39,9 @@ pipeline {
                 reuseNode true
               }
           }
+          
           stages {
+              
               stage('ZENDPHP Composer Install') {
                 steps {
                   echo 'Running PHP 7.4 tests...'
@@ -47,9 +49,23 @@ pipeline {
                   echo 'Installing from  Composer'
                   sh 'composer config --no-plugins allow-plugins.kylekatarnls/update-helper true'
                   sh 'cd $WORKSPACE && composer install --no-progress --ignore-platform-reqs'            
+                }
+              }
+              
+              stage('ZENDPHP Laravel  setup') {
+                steps {
+                  echo 'Laravel Setup'
+                  sh 'cd $WORKSPACE'            
                   echo 'Running Artisan generate key...'
-                  sh 'php artisan key:generate '
-                  echo 'Running PHPUnit tests...'
+                  sh 'php artisan key:generate'
+                }
+              }
+
+              
+              stage('ZENDPHP Unit Test') {
+                when { expression { params.skip_test != true } }
+                steps {
+                 echo 'Running PHPUnit tests...'
                   sh 'php $WORKSPACE/vendor/bin/phpunit -c $WORKSPACE/phpunit.xml  --log-junit $WORKSPACE/reports/report-junit.xml  --coverage-clover $WORKSPACE/reports/clover.xml --testdox-html $WORKSPACE/reports/testdox.html'
                   sh 'chmod -R a+w $PWD && chmod -R a+w $WORKSPACE'
                 }
@@ -61,14 +77,15 @@ pipeline {
                 }
               }
         
+              
               stage('ZENDPHP Checkstyle Report') {
-                 when { expression { params.skip_test != true } }
+                when { expression { params.skip_test != true } }
                 steps {
                   sh 'vendor/bin/phpcs  --report-file=$WORKSPACE/reports/checkstyle.xml --standard=$WORKSPACE/phpcs.xml --extensions=php,inc --ignore=autoload.php --ignore=$WORKSPACE/vendor  $WORKSPACE/app' 
                 }
-                
               }
         
+              
               stage('ZENDPHP Mess Detection Report') {
                 when { expression { params.skip_test != true } }
                 steps {
@@ -76,7 +93,9 @@ pipeline {
                 }
               }
           
+              
               stage('Report Coverage') {
+                when { expression { params.skip_test != true } }
                 steps {
                   echo 'GENERATE REPORT CODE COVERAGE.'
                   publishHTML (target: [
@@ -89,7 +108,7 @@ pipeline {
 
                   ])
                 }
-              }
+            }
 
             stage('Zip laravel php application'){
                   steps {
