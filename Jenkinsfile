@@ -35,7 +35,7 @@ pipeline {
             agent {
               docker {
                 image 'remote_zend_php_builder'
-                args '--entrypoint="" -u zendphp --privileged'
+                args '--entrypoint=""'
                 reuseNode true
               }
           }
@@ -52,6 +52,7 @@ pipeline {
                   echo 'Running PHPUnit tests...'
                   sh 'php $WORKSPACE/vendor/bin/phpunit -c $WORKSPACE/phpunit.xml  --log-junit $WORKSPACE/reports/report-junit.xml  --coverage-clover $WORKSPACE/reports/clover.xml --testdox-html $WORKSPACE/reports/testdox.html'
                   sh 'chmod -R a+w $PWD && chmod -R a+w $WORKSPACE'
+                  sh 'chown -R zendphp:zendphp $WORKSPACE/vendor'
                 }
 
                 post{
