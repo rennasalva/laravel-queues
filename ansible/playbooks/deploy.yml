@@ -158,22 +158,18 @@
       register: file_exists_static
       ignore_errors: yes
 
-    - name: Copy build on remote server
+    - name: test asset.zip on remote server
       ansible.builtin.file:
         path: /tmp/asset.zip
         state: absent
       when: file_exists_static is succeeded
 
-    - name: Copy build on remote server
+    - name: Copy asset.zip on remote server
       ansible.builtin.copy:
         src:  "{{ workspace }}/asset.zip"
         dest: /tmp/asset.zip 
 
-    - name: Check if folder app already exists
-      command: rm -fr "/app_{{ build }}"
-      ignore_errors: yes
-
-    - name: Creates Directory for asset code
+    - name: Creates Directory for asset code app_asset_{{ build }}
       ansible.builtin.file:
         # path: "{{ home }}/app_{{ build }}"
         path: "/ZendPhp/Deployment/app_asset_{{ build }}"
@@ -190,14 +186,14 @@
         group:  www-data
         remote_src: yes
 
-     - name: Give right permissions to an existing folder
+    - name: Give right permissions to app_asset_{{ build }}
       ansible.builtin.file:
         path: "/ZendPhp/Deployment/app_asset_{{ build }}"
         recurse: true 
         mode: '0755'
 
 
-    - name: Create symbolic link to static virtualhost
+    - name: Create symbolic link to static virtualhost app_asset_{{ build }}
       file:
         src: "/ZendPhp/Deployment/app_asset_{{ build }}"
         dest: "{{document_root_static}}"
