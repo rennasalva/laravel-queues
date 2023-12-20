@@ -153,18 +153,25 @@
         state: link  
 
     
-    - name: Check asset.zip in tmp  remote server
+    - name: Check if asset.zip already exists
+      command: ls /tmp/asset.zip 
+      register: file_exists_static
+      ignore_errors: yes
+
+    - name: Copy build on remote server
       ansible.builtin.file:
         path: /tmp/asset.zip
         state: absent
-      when: file_static_exists is succeeded  
+      when: file_exists_static is succeeded
 
-
-    - name: Copy asset.zip in tmp on remote server
+    - name: Copy build on remote server
       ansible.builtin.copy:
         src:  "{{ workspace }}/asset.zip"
-        dest: /tmp/asset.zip     
-      when: file_static_exists is succeeded
+        dest: /tmp/asset.zip 
+
+    - name: Check if folder app already exists
+      command: rm -fr "/app_{{ build }}"
+      ignore_errors: yes
 
     - name: Creates Directory for asset code
       ansible.builtin.file:
