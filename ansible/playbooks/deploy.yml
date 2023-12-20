@@ -137,7 +137,7 @@
         group: zendphp
         state: link  
 
-
+    #deploy static file
     - name: Copy File virtual host static  on site enable
       template:
         src:  "{{ workspace }}/ansible/templates/nginx-deploy-static.j2"
@@ -152,6 +152,22 @@
         group: www-data
         state: link  
 
+    - name: Remove prev deploy asset zip file
+      command: rm -fr /tmp/asset.zip 
+      ignore_errors: yes
+    
+    - name: Check if static asset  zip already exists
+      command: ls /tmp/asset.zip 
+      register: file_static_exists
+      ignore_errors: yes
+
+
+    - name: Copy asset.zip in tmp on remote server
+      ansible.builtin.copy:
+        src:  "{{ workspace }}/asset.zip"
+        dest: /tmp/asset.zip     
+      when: file_static_exists is succeeded
+
     - name: Extract asset.zip into app_asset_{{ build }}
       ansible.builtin.unarchive:
         src : "/tmp/asset.zip" 
@@ -161,12 +177,13 @@
         remote_src: yes
 
 
-        
-    - name: Create symbolic link to virtualhost
+    - name: Create symbolic link to static virtualhost
       file:
         src: "/ZendPhp/Deployment/app_asset_{{ build }}"
         dest: "{{document_root_static}}"
         state: link        
+    
+    
     
     - name: Reload Niginx configuration
       shell: /etc/init.d/nginx reload
