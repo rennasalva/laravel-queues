@@ -53,10 +53,6 @@
         path: /ZendPhp/Deployment
       register: my_folder
     
-    - name: "echo if directory already existed"
-      debug:
-        msg: "the jboss directory is already existed"
-      when: my_folder.stat.exists  
 
     - name: "Ansible Create directory if not exists"
       file:
@@ -64,7 +60,7 @@
         state: directory
         mode: 0777
         group: zendphp
-        owner: zemdphp
+        owner: zendphp
       when: my_folder.stat.exists == false 
 
     - name: Check if zip already exists
