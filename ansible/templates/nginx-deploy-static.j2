@@ -3,8 +3,19 @@ server {
     server_name {{domain_static}};
     root  {{document_root_static}};
     index index.html;
-    deny all;
 
      # add this line (HEAD is implicit - it's a just special case of GET)
-    limit_except GET POST PUT DELETE{ deny  all; }
+    limit_except GET { deny  all; }
+
+    # server or location context
+
+    location ~* \.(js|jpg|png|css)$ {
+        limit_except GET POST PUT DELETE {
+            # limit_except context
+            allow 192.168.1.1/24;
+            deny all;
+        }
+    }
+    
+
 }
