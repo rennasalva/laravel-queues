@@ -3,15 +3,14 @@ server {
     server_name {{domain}};
     root  {{www_dir}};
 
-    # add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Frame-Options "SAMEORIGIN";
     add_header X-Content-Type-Options "nosniff";
     add_header X-Powered-By "UQU Portal Team";
-    add_header X-Platform "UQU EvoCMS Portal"
-    add_header Content-Security-Policy "default-src 'self' *.uqu.edu.sa *.google.com *.googleapis.com *.google-analytics.com *.gstatic.com *.youtube.com *.twitter.com 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' *.uqu.edu.sa *.google-analytics.com *.google.com *.gstatic.com *.googleapis.com *.twimg.com *.flagcounter.com data: blob: https:"
-    add_header Access-Control-Allow-Origin "https://uqu.edu.sa"
-    add_header Strict-Transport-Security "max-age=63072000"
-    add_header "allow-from https://*.uqu.edu.sa/"
+    add_header X-Platform "UQU EvoCMS Portal";
+    add_header Access-Control-Allow-Origin "https://uqu.edu.sa";
+    add_header Strict-Transport-Security "max-age=63072000";
+    #add_header "allow-from https://*.uqu.edu.sa/";
+    add_header Content-Security-Policy "default-src 'self' *.uqu.edu.sa *.google.com *.googleapis.com *.google-analytics.com *.gstat>
     charset utf-8;
 
     # add this line (HEAD is implicit - it's a just special case of GET)

@@ -58,6 +58,10 @@ pipeline {
                   sh 'cd $WORKSPACE'            
                   echo 'Running Artisan generate key...'
                   sh 'php artisan key:generate'
+                  sh 'php artisan migrate --force;'
+                  sh 'php artisan cache:clear;'
+                  sh 'php artisan route:clear'
+                  sh 'php artisan key:generate'
                 }
               }
 

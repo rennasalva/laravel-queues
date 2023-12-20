@@ -5,5 +5,5 @@ document_root_static: '/document_root_static'
 document_root_static_public: '/document_root_static'
 port_number: '80'
 domain: 'laravel.localhost'
-domain_static: 'laravel.css.localhost'
+domain_static: 'laravel.static.localhost'
 ...

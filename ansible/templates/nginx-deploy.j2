@@ -17,9 +17,22 @@ server {
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-Content-Type-Options "nosniff";
- 
+    add_header X-Powered-By "UQU Portal Team";
+    add_header X-Platform "UQU EvoCMS Portal";
+    add_header Access-Control-Allow-Origin "https://uqu.edu.sa";
+    add_header Strict-Transport-Security "max-age=63072000";
+    #add_header "allow-from https://*.uqu.edu.sa/";
+    add_header Content-Security-Policy "default-src 'self' *.uqu.edu.sa *.google.com *.googleapis.com *.google-analytics.com *.gstat>
+
+    location ~ "^/(packages|assets|uploads|uqu-server-status)($|/)" {
+        break;
+    }
  
     location / {
+        limit_except GET POST PUT DELETE {
+            # limit_except context
+            deny all;
+        }
         try_files $uri $uri/ /index.php?$query_string;
     }
  
