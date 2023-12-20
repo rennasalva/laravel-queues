@@ -123,6 +123,8 @@
     - name: Give insecure permissions to an existing file
       ansible.builtin.file:
         path: "/ZendPhp/Deployment/app_{{ build }}"
+        owner: zendphp
+        group: zendphp
         mode: '0777'
 
         
