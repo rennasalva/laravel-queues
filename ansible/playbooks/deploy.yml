@@ -168,6 +168,15 @@
         dest: /tmp/asset.zip     
       when: file_static_exists is succeeded
 
+    - name: Creates Directory for asset code
+      ansible.builtin.file:
+        # path: "{{ home }}/app_{{ build }}"
+        path: "/ZendPhp/Deployment/app_asset_{{ build }}"
+        state: directory
+        mode: 777
+        owner: www-data
+        group: www-data
+
     - name: Extract asset.zip into app_asset_{{ build }}
       ansible.builtin.unarchive:
         src : "/tmp/asset.zip" 
