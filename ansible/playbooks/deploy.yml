@@ -190,6 +190,12 @@
         group:  www-data
         remote_src: yes
 
+     - name: Give right permissions to an existing folder
+      ansible.builtin.file:
+        path: "/ZendPhp/Deployment/app_asset_{{ build }}"
+        recurse: true 
+        mode: '0755'
+
 
     - name: Create symbolic link to static virtualhost
       file:
