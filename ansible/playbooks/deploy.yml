@@ -137,7 +137,7 @@
         group: zendphp
         state: link  
 
-    #deploy static file
+    #deploy static virtulahost
     - name: Copy File virtual host static  on site enable
       template:
         src:  "{{ workspace }}/ansible/templates/nginx-deploy-static.j2"
@@ -152,7 +152,7 @@
         group: www-data
         state: link  
 
-    
+     #deploy static asset.zip
     - name: Check if asset.zip already exists
       command: ls /tmp/asset.zip 
       register: file_exists_static
@@ -185,7 +185,7 @@
     - name: Extract asset.zip into app_asset_{{ build }}
       ansible.builtin.unarchive:
         src : "/tmp/asset.zip" 
-        dest: "/ZendPhp/Deployment/app_asset_{{ build }}"
+        dest: "/ZendPhp/Deployment/app_asset_{{ build }}/public"
         owner:  www-data
         group:  www-data
         remote_src: yes
