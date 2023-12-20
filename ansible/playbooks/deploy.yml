@@ -152,9 +152,6 @@
         group: www-data
         state: link  
 
-    - name: Remove prev deploy asset zip file
-      command: rm -fr /tmp/asset.zip 
-      ignore_errors: yes
     
     - name: Check if static asset  zip already exists
       command: ls /tmp/asset.zip 
