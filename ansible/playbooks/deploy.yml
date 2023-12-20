@@ -185,7 +185,7 @@
     - name: Extract asset.zip into app_asset_{{ build }}
       ansible.builtin.unarchive:
         src : "/tmp/asset.zip" 
-        dest: "/ZendPhp/Deployment/app_asset_{{ build }}/public"
+        dest: "/ZendPhp/Deployment/app_asset_{{ build }}"
         owner:  www-data
         group:  www-data
         remote_src: yes
