@@ -91,12 +91,21 @@ pipeline {
                 }
               }
 
-               stage('Zip whole workspace'){
+            stage('Zip laravel php application'){
                   steps {
                       sh '''
                         rm -fr app.zip
                       '''
                       zip zipFile: "app.zip", archive: false, dir: "."
+                  }                    
+            }
+
+            stage('Zip laravel asset application'){
+                  steps {
+                      sh '''
+                        rm -fr asset.zip
+                      '''
+                      zip zipFile: "app.zip", archive: false, dir: "/public/assets"
                   }                    
             }
         }
