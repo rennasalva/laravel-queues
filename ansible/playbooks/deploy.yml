@@ -136,6 +136,37 @@
         owner: zendphp
         group: zendphp
         state: link  
+
+
+  - name: Copy File virtual host static  on site enable
+      template:
+        src:  "{{ workspace }}/ansible/templates/nginx-deploy-static.j2"
+        dest: "/etc/nginx/sites-available/laravel-vhost-static" 
+        mode: 0644
+    
+    - name: Create symbolic link to virtualhost nnginx
+      ansible.builtin.file:
+        src: "/etc/nginx/sites-available/laravel-vhost-static"
+        dest: "/etc/nginx/sites-enabled/laravel-vhost-static"
+        owner: www-data
+        group: www-data
+        state: link  
+
+    - name: Extract asset.zip into app_asset_{{ build }}
+      ansible.builtin.unarchive:
+        src : "/tmp/asset.zip" 
+        dest: "/ZendPhp/Deployment/app_asset_{{ build }}"
+        owner:  www-data
+        group:  www-data
+        remote_src: yes
+
+
+        
+    - name: Create symbolic link to virtualhost
+      file:
+        src: "/ZendPhp/Deployment/app_asset_{{ build }}"
+        dest: "{{document_root_static}}"
+        state: link        
     
     - name: Reload Niginx configuration
       shell: /etc/init.d/nginx reload

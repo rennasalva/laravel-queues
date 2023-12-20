@@ -105,7 +105,7 @@ pipeline {
                       sh '''
                         rm -fr asset.zip
                       '''
-                      zip zipFile: "app.zip", archive: false, dir: "/public/assets"
+                      zip zipFile: "asset.zip", archive: false, dir: "/public/assets"
                   }                    
             }
         }

@@ -2,6 +2,8 @@
 document_root: '/document_root'
 document_root_public: '/document_root/public'
 document_root_static: '/document_root_static'
+document_root_static_public: '/document_root_static/public'
 port_number: '80'
 domain: 'laravel.localhost'
+domain_static: 'laravel.css.localhost'
 ...
