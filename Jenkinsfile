@@ -35,8 +35,7 @@ pipeline {
             agent {
               docker {
                 image 'remote_zend_php_builder'
-                args '--entrypoint=""'
-                args '-u zendphp --privileged'
+                args '--entrypoint="" -u zendphp --privileged'
                 reuseNode true
               }
           }
