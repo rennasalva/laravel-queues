@@ -4,11 +4,8 @@ server {
     root  {{document_root_static}};
     index index.html;
 
-     # add this line (HEAD is implicit - it's a just special case of GET)
-    limit_except GET { deny  all; }
 
-    # server or location context
-
+    # server or location context asset
     location ~* \.(js|jpg|png|css)$ {
         limit_except GET POST PUT DELETE {
             # limit_except context
