@@ -14,70 +14,42 @@
     - name: utente e home corrente
       debug:
         msg: "Username: {{ user }}, Home dir: {{ home }}"
-    
-    # - name: Check if file already exists
-    #   command: ls /home/{{ user }}/myfile
-    #   register: file_exists
-    #   ignore_errors: yes
+  
 
-    # - name: create file for user
-    #   copy:
-    #     dest: "/home/{{ user }}/myfile"
-    #     content: |
-    #       line 01
-    #       line 02
-    #   when: file_exists is failed
-
-    # - name: show message if file exists
-    #   debug:
-    #     msg: The user file already exists.
-    #   when: file_exists is succeeded
-
-    # - name: Create a bz2 archive of a globbed path, while excluding specific dirnames
-    #   community.general.archive:
-    #     path:
-    #     - /app*
-    #     dest:  /home/{{ user }}/app.tar.bz2
-    #     exclude_path:
-    #     - /app/.DS_Store
-    #     - /app/.laminas-ci
-    #     format: bz2
-    
-    # - name: Check if zip already exists
-    #   command: ls /home/{{ user }}/app.tar.bz2
-    #   register: file_tar_exists
-    #   ignore_errors: yes
-
-    - name: Ansible check directory.
+    - name: Ansible root directort deploy.
       stat:
         path: /ZendPhp/Deployment
-      register: my_folder
-    
+      register: root_deploy
 
-    - name: "Ansible Create directory if not exists"
+    - name: remove tmp file (app.zip,asset.zip)
+      ansible.builtin.command: rm -fr /tmp/app.zip /tmp/asset.zip
+      ignore_errors: yes
+
+    - name: "Create directory /ZendPhp/Deployment  if not exists"
       file:
         path: /ZendPhp/Deployment
         state: directory
         mode: 0777
         group: zendphp
         owner: zendphp
-      when: my_folder.stat.exists == false 
+      when: root_deploy.stat.exists == false 
 
     - name: Check if zip already exists
       command: ls /tmp/app.zip 
       register: file_exists
       ignore_errors: yes
 
-    - name: Copy build on remote server
-      ansible.builtin.file:
-        path: /tmp/app.zip
-        state: absent
-      when: file_exists is succeeded
+    # - name: Copy build on remote server
+    #   ansible.builtin.file:
+    #     path: /tmp/app.zip
+    #     state: absent
+    #   when: file_exists is succeeded
 
     - name: Copy build on remote server
       ansible.builtin.copy:
         src:  "{{ workspace }}/app.zip"
         dest: /tmp/app.zip 
+      when: file_exists is not succeeded
 
     - name: Check if folder app already exists
       command: rm -fr "/app_{{ build }}"
