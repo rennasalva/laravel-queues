@@ -1,0 +1,69 @@
+---
+- hosts: [zend1,zend2,zend3]
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  vars_files:
+    - "{{ workspace }}/ansible/vars/zendphp.yaml"  
+
+
+  tasks:
+    
+    - name: Install EPEL Vim, Curl and Unzip on Censtos RedHat
+      yum:
+        name:  "{{ item }}"
+        update_cache: yes
+        state: latest
+      loop:
+         -epel-release
+        - vim
+        - curl
+        - unzip 
+      when: ansible_distribution == 'CentOS|Redhat'
+
+       
+
+    - name: Update apt cache and make sure Vim, Curl and Unzip are installed debian ubuntu
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+      loop:
+        - vim
+        - curl
+        - unzip 
+      when: ansible_distribution == 'debian|ubuntu'   
+    
+
+    - name: create group "zendphp"  with correct gid
+      ansible.builtin.group:
+        name: 'zendphp'
+        state: present
+        gid: 10001    
+
+    - name : create user zendphp with correct gid
+      ansible.builtin.user:
+        name: 'zendphp'
+        group: 'zendphp'
+        uid: 10000
+        shell: /sbin/nologin
+        create_home: no
+
+    - name: Install Nginx
+      package:
+        name: nginx
+        state: latest
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+      notify: Check HTTP Service
+  # Handlers: the list of handlers that are executed as a notify key from a task
+  handlers:
+    - name: Check HTTP Service
+      uri:
+        url: http://{{ ansible_default_ipv4.address }}
+        status_code: 200     
+    
+
+...
