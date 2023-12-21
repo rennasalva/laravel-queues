@@ -22,11 +22,11 @@ server {
     add_header Access-Control-Allow-Origin "https://uqu.edu.sa";
     add_header Strict-Transport-Security "max-age=63072000";
     #add_header "allow-from https://*.uqu.edu.sa/";
-    add_header Content-Security-Policy "default-src 'self' *.uqu.edu.sa *.google.com *.googleapis.com *.google-analytics.com *.gstat>
+    #add_header Content-Security-Policy "default-src 'self' *.uqu.edu.sa *.google.com *.googleapis.com *.google-analytics.com *.gstat>
 
-    location ~ "^/(packages|assets|uploads|uqu-server-status)($|/)" {
-        break;
-    }
+    #location ~ "^/(packages|assets|uploads|uqu-server-status)($|/)" {
+    #    break;
+    #}
  
     location / {
         limit_except GET POST PUT DELETE {

@@ -4,11 +4,16 @@ pipeline {
       build = "buils-${JOB_NAME}-${BUILD_NUMBER}"
   }
   parameters {
-        booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
         choice(
-                choices: ['ALL', 'ONLY APP','ONNLY STATIC FILE','ONLY CLI'], 
+                choices: ['ALL', 'ONLY APP','ONLY STATIC FILE','ONLY CLI'], 
                 name: 'deploy_policy'
         )
+        choice(
+                choices: ['TEST', 'DEV','PRODUCTION','ALL'], 
+                name: 'deploy_environment'
+        )
+        booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
+     
     }
 
   stages {
