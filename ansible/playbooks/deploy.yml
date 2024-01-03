@@ -1,6 +1,6 @@
 ---
 - 
-  hosts: "{{ host }}""
+  hosts: "{{ host }}"
   become: yes
   become_method: sudo
   gather_facts: yes
