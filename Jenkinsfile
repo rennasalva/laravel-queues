@@ -154,7 +154,7 @@ pipeline {
     stage('Ansible deploy Application') {
           steps {
              sh '''
-             ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=/var/jenkins_home/workspace/pipeline-laravel-repo" -e "build=$build"
+             ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=$WORKSPACE" -e "build=$build"
              '''
           }
           

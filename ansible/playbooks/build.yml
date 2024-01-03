@@ -1,0 +1,12 @@
+---
+- hosts: [builder]
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  vars_files:
+    - "{{ workspace }}/ansible/vars/build.yaml"  
+  tasks:
+    - name: test php version
+      shell: php -v 
+      register: php_version
+...
