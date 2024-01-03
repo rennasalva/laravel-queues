@@ -10,7 +10,7 @@ pipeline {
         )
         choice(
                 choices: ['TEST', 'DEV','PRODUCTION','ALL'], 
-                name: 'deploy_environment'
+                name: 'deploy_server_group'
         )
         booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
      
@@ -158,7 +158,7 @@ pipeline {
               when { expression { params.deploy_policy == 'ALL' } }
               steps {
                 sh '''
-                ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=$WORKSPACE" -e "build=$build"
+                ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=$WORKSPACE" -e "build=$build -e host=$deploy_server_group"
                 '''
               }
             } 

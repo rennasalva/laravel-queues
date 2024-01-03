@@ -1,5 +1,5 @@
 ---
-- hosts: [dev1,dev2,dev3]
+- hosts: [dev]
   become: yes
   become_method: sudo
   gather_facts: yes
