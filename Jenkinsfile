@@ -146,7 +146,7 @@ pipeline {
   
     stage('Ansible Ping Server') {
           steps {
-             sh 'ansible -i /var/jenkins_home/ansible/hosts --module-name ping'
+             sh 'ansible -i dev /var/jenkins_home/ansible/hosts --module-name ping'
           }
           
     }
