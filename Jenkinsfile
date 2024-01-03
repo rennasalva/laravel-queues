@@ -9,7 +9,7 @@ pipeline {
                 name: 'deploy_policy'
         )
         choice(
-                choices: ['TEST', 'DEV','PRODUCTION','ALL'], 
+                choices: ['dev', 'prod','all'], 
                 name: 'deploy_server_group'
         )
         booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
@@ -146,7 +146,7 @@ pipeline {
   
     stage('Ansible Ping Server') {
           steps {
-             sh 'ansible -i dev /var/jenkins_home/ansible/hosts --module-name ping'
+             sh 'ansible -i "$deploy_server_group" /var/jenkins_home/ansible/hosts --module-name ping'
           }
           
     }
