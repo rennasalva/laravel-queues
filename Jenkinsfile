@@ -151,14 +151,16 @@ pipeline {
           
     }
         
-    stage('Ansible deploy Application') {
-          when { expression { params.deploy_policy == 'ALL' } }
-          steps {
-             sh '''
-             ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=$WORKSPACE" -e "build=$build"
-             '''
-          }
-          
+    stage('Ansible deploy Application WorkFlow') {
+       stages {
+          stage('Ansible deploy all Application'){
+            when { expression { params.deploy_policy == 'ALL' } }
+            steps {
+              sh '''
+              ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=$WORKSPACE" -e "build=$build"
+              '''
+            }
+          }          
         }
      }
 }
