@@ -153,35 +153,42 @@ pipeline {
         
     stage('Ansible deploy Application WorkFlow') {
        stages {
-          
+        
           stage('Ansible deploy all Application'){
-            when { expression { params.deploy_policy == 'ALL' } }
-            steps {
-              sh '''
-              ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=$WORKSPACE" -e "build=$build"
-              '''
-            }
-          } 
+              when { expression { params.deploy_policy == 'ALL' } }
+              steps {
+                sh '''
+                ansible-playbook ansible/playbooks/deploy.yml -i /var/jenkins_home/ansible/hosts -e "workspace=$WORKSPACE" -e "build=$build"
+                '''
+              }
+            } 
 
           stage('Ansible deploy only web application'){
-            when { expression { params.deploy_policy == 'ONLY APP' } }
-            steps {
-              sh '''
-                  echo "****  only application ****"
-              '''
+              when { expression { params.deploy_policy == 'ONLY APP' } }
+              steps {
+                sh '''
+                    echo "****  only application ****"
+                '''
+              }
+            } 
+
+          stage('Ansible deploy only cli'){
+              when { expression { params.deploy_policy == 'ONLY CLI' } }
+              steps {
+                sh '''
+                    echo "**** only only cli ****"
+                '''
+              }
             }
-          } 
 
           stage('Ansible deploy only command line'){
-            when { expression { params.deploy_policy == 'ONLY CLI' } }
-            steps {
-              sh '''
-                  echo "**** only application ****"
-              '''
+              when { expression { params.deploy_policy == 'ONLY STATIC FILE' } }
+              steps {
+                sh '''
+                    echo "**** only staic file ****"
+                '''
+              }
             }
-          }
-
-
         }
      }
   }   
