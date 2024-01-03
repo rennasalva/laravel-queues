@@ -1,6 +1,6 @@
 ---
 - 
-  hosts: [dev1]
+  hosts: "dev"
   become: yes
   become_method: sudo
   gather_facts: yes
