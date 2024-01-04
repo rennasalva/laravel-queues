@@ -48,6 +48,20 @@ pipeline {
                 reuseNode true
               }
           }
+
+          stage('usernamePassword') {
+              steps {
+                script {
+                  withCredentials([
+                    usernamePassword(credentialsId: 'github',
+                      variable : 'TOKEN')
+                  ]) {
+                    sh 'echo "token ${TOKEN}"'
+                  }
+                }
+              }
+            }
+
           
           stages {
               
@@ -59,7 +73,8 @@ pipeline {
                   sh 'composer config --no-plugins allow-plugins.kylekatarnls/update-helper true'
                   sh '''
                   cd $WORKSPACE 
-                  export COMPOSER_AUTH='{"gitlab-token":{"${GITLAB_HOST}": "'${GITLAB_ACCESS_TOKEN}'"},"gitlab-domains" :["${GITLAB_HOST}"]}'
+                  777export COMPOSER_AUTH='{"gitlab-token":{"${GITLAB_HOST}": "'${GITLAB_ACCESS_TOKEN}'"},"gitlab-domains" :["${GITLAB_HOST}"]}'
+                  composer config -g github-oauth.github.com abc123def456ghi7890jkl987mno654pqr321stu
                   composer install --no-progress --ignore-platform-reqs
                   '''           
                 }
