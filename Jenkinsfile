@@ -57,20 +57,22 @@ pipeline {
                 steps {
                   script {
                     withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
-                        // available as an env variable, but will be masked if you try to print it out any which way
-                        // note: single quotes prevent Groovy interpolation; expansion is by Bourne Shell, which is what you want
+                        // sh '''
+                        // echo "token: $TOKEN"
+                        // echo "username is $USERNAME"
+                        // '''
+                        echo 'Running PHP Version tests...'
                         sh '''
-                        echo "token: $TOKEN"
-                        echo "username is $USERNAME"
+                        php -v  
+                        php --ri xdebug 
+                        php -ini
                         '''
-                         echo 'Running PHP 7.4 tests...'
-                        sh 'php -v && php --ri xdebug && php -ini'
                         echo 'Installing from  Composer'
                         sh 'composer config --no-plugins allow-plugins.kylekatarnls/update-helper true'
                         // sh 'composer config -g github-oauth.github.com "$TOKEN"'
                         sh '''
                           cd $WORKSPACE 
-                          export COMPOSER_AUTH='{"github-oauth":{"github.com": "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"}}'
+                          export COMPOSER_AUTH='{"github-oauth":{"github.com": "$TOKEN"}}'
                           composer install --no-progress --ignore-platform-reqs
                           '''           
                       }
