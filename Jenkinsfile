@@ -54,10 +54,14 @@ pipeline {
               stage('ZENDPHP Composer Install') {
                 steps {
                   echo 'Running PHP 7.4 tests...'
-                  sh 'php -v && php --ri xdebug'
+                  sh 'php -v && php --ri xdebug && php -ini'
                   echo 'Installing from  Composer'
                   sh 'composer config --no-plugins allow-plugins.kylekatarnls/update-helper true'
-                  sh 'cd $WORKSPACE && composer install --no-progress --ignore-platform-reqs'            
+                  sh '''
+                  cd $WORKSPACE 
+                  export COMPOSER_AUTH='{"gitlab-token":{"${GITLAB_HOST}": "'${GITLAB_ACCESS_TOKEN}'"},"gitlab-domains" :["${GITLAB_HOST}"]}'
+                  composer install --no-progress --ignore-platform-reqs
+                  '''           
                 }
               }
               

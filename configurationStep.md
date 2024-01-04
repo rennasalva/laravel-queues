@@ -54,6 +54,7 @@
 
 # Jenkins variable for build
 https://wiki.jenkins.io/display/JENKINS/Building+a+software+project
+https://www.dbi-services.com/blog/specify-hosts-in-ansible-playbook-command-line/
 
 # Jenkins parameter for running pipeline
 https://www.jenkins.io/doc/book/pipeline/syntax/#parameters

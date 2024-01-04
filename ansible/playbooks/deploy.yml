@@ -77,7 +77,7 @@
         dest: "/etc/nginx/sites-available/laravel-vhost" 
         mode: 0644
     
-    - name: Create symbolic link to virtualhost nnginx
+    - name: Create symbolic link to virtualhost nginx
       ansible.builtin.file:
         src: "/etc/nginx/sites-available/laravel-vhost"
         dest: "/etc/nginx/sites-enabled/laravel-vhost"
