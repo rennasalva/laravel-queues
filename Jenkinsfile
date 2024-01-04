@@ -49,21 +49,23 @@ pipeline {
               }
           }
 
-          stage('usernamePassword') {
-              steps {
-                script {
-                  withCredentials([
-                    usernamePassword(credentialsId: 'github',
-                      variable : 'TOKEN')
-                  ]) {
-                    sh 'echo "token ${TOKEN}"'
+          
+          stages {
+            
+            
+              stage('usernamePassword') {
+                steps {
+                  script {
+                    withCredentials([
+                      usernamePassword(credentialsId: 'github',
+                        variable : 'TOKEN')
+                    ]) {
+                      sh 'echo "token ${TOKEN}"'
+                    }
                   }
                 }
               }
-            }
 
-          
-          stages {
               
               stage('ZENDPHP Composer Install') {
                 steps {
