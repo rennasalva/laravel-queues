@@ -67,9 +67,10 @@ pipeline {
                         sh 'php -v && php --ri xdebug && php -ini'
                         echo 'Installing from  Composer'
                         sh 'composer config --no-plugins allow-plugins.kylekatarnls/update-helper true'
-                        sh 'composer config -g github-oauth.github.com "$TOKEN"'
+                        // sh 'composer config -g github-oauth.github.com "$TOKEN"'
                         sh '''
                           cd $WORKSPACE 
+                          export COMPOSER_AUTH="COMPOSER_AUTH: '{"github-oauth": {"github.com": "$TOKEN"}}'"
                           composer install --no-progress --ignore-platform-reqs
                           '''           
                       }
@@ -87,6 +88,7 @@ pipeline {
               //     sh '''
               //     cd $WORKSPACE 
               //     777export COMPOSER_AUTH='{"gitlab-token":{"${GITLAB_HOST}": "'${GITLAB_ACCESS_TOKEN}'"},"gitlab-domains" :["${GITLAB_HOST}"]}'
+              
               //     composer config -g github-oauth.github.com abc123def456ghi7890jkl987mno654pqr321stu
               //     composer install --no-progress --ignore-platform-reqs
               //     '''           
