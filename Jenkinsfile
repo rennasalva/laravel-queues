@@ -67,12 +67,13 @@ pipeline {
                         php --ri xdebug 
                         php -ini
                         '''
-                        echo 'Installing from  Composer'
+                        echo 'Configure  Composer'
                         sh 'composer config --no-plugins allow-plugins.kylekatarnls/update-helper true'
                         // sh 'composer config -g github-oauth.github.com "$TOKEN"'
+                        echo 'Intsalli packages with Composer'
                         sh '''
                           cd $WORKSPACE 
-                          export COMPOSER_AUTH='{"github-oauth":{"github.com": "$TOKEN"}}'
+                          export COMPOSER_AUTH='{"github-oauth":{"github.com": "${TOKEN}"}}'
                           composer install --no-progress --ignore-platform-reqs
                           '''           
                       }
