@@ -75,6 +75,7 @@ pipeline {
                           cd $WORKSPACE 
                           COMPOSER_AUTH=$(printf '{"github-oauth":{"github.com": "%s"}}' $TOKEN)
                           export COMPOSER_AUTH
+                          echo "Composer Authentication $COMPOSER_AUTH "
                           composer install --no-progress --ignore-platform-reqs
                           '''           
                       }
