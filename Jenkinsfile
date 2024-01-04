@@ -73,7 +73,7 @@ pipeline {
                         echo 'Intsalli packages with Composer'
                         sh '''
                           cd $WORKSPACE 
-                          authToken = "{"github.com": "$TOKEN"}"
+                          authToken="{"github.com": "$TOKEN"}"
                           export COMPOSER_AUTH='{"github-oauth":"$authToken"}'
                           composer install --no-progress --ignore-platform-reqs
                           '''           
