@@ -53,37 +53,45 @@ pipeline {
           stages {
             
             
-              stage('usernamePassword') {
+              stage('ZENDPHP Composer Install') {
                 steps {
                   script {
-                    withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
                         // available as an env variable, but will be masked if you try to print it out any which way
                         // note: single quotes prevent Groovy interpolation; expansion is by Bourne Shell, which is what you want
-                        sh 'echo $PASSWORD'
-                        // also available as a Groovy variable
-                        echo USERNAME
-                        // or inside double quotes for string interpolation
+                        sh '''
+                        echo "token: $TOKEN"
                         echo "username is $USERNAME"
-}
+                        '''
+                         echo 'Running PHP 7.4 tests...'
+                        sh 'php -v && php --ri xdebug && php -ini'
+                        echo 'Installing from  Composer'
+                        sh 'composer config --no-plugins allow-plugins.kylekatarnls/update-helper true'
+                        sh 'composer config -g github-oauth.github.com "$TOKEN"'
+                        sh '''
+                          cd $WORKSPACE 
+                          composer install --no-progress --ignore-platform-reqs
+                          '''           
+                      }
                   }
                 }
               }
 
               
-              stage('ZENDPHP Composer Install') {
-                steps {
-                  echo 'Running PHP 7.4 tests...'
-                  sh 'php -v && php --ri xdebug && php -ini'
-                  echo 'Installing from  Composer'
-                  sh 'composer config --no-plugins allow-plugins.kylekatarnls/update-helper true'
-                  sh '''
-                  cd $WORKSPACE 
-                  777export COMPOSER_AUTH='{"gitlab-token":{"${GITLAB_HOST}": "'${GITLAB_ACCESS_TOKEN}'"},"gitlab-domains" :["${GITLAB_HOST}"]}'
-                  composer config -g github-oauth.github.com abc123def456ghi7890jkl987mno654pqr321stu
-                  composer install --no-progress --ignore-platform-reqs
-                  '''           
-                }
-              }
+              // stage('ZENDPHP Composer Install') {
+              //   steps {
+              //     echo 'Running PHP 7.4 tests...'
+              //     sh 'php -v && php --ri xdebug && php -ini'
+              //     echo 'Installing from  Composer'
+              //     sh 'composer config --no-plugins allow-plugins.kylekatarnls/update-helper true'
+              //     sh '''
+              //     cd $WORKSPACE 
+              //     777export COMPOSER_AUTH='{"gitlab-token":{"${GITLAB_HOST}": "'${GITLAB_ACCESS_TOKEN}'"},"gitlab-domains" :["${GITLAB_HOST}"]}'
+              //     composer config -g github-oauth.github.com abc123def456ghi7890jkl987mno654pqr321stu
+              //     composer install --no-progress --ignore-platform-reqs
+              //     '''           
+              //   }
+              // }
               
               stage('ZENDPHP Laravel  setup') {
                 steps {
