@@ -57,7 +57,7 @@ pipeline {
                 steps {
                   script {
                     withCredentials([
-                      usernamePassword(credentialsId: 'github',
+                      string(credentialsId: 'github',
                         variable : 'TOKEN')
                     ]) {
                       sh 'echo "token ${TOKEN}"'
