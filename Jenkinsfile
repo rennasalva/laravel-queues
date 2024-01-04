@@ -73,7 +73,7 @@ pipeline {
                         echo 'Intsalli packages with Composer'
                         sh '''
                           cd $WORKSPACE 
-                          export COMPOSER_AUTH="'{"github-oauth":{"github.com": "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"}}'"
+                          export COMPOSER_AUTH='{"github-oauth":{"github.com": "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"}}'
                           composer install --no-progress --ignore-platform-reqs
                           '''           
                       }
