@@ -1,0 +1,21 @@
+---
+# handlers file for ZendPHP
+- name: reload nginx
+  service:
+    name: nginx
+    state: reloaded
+  become: yes
+
+- name: reload apache
+  service:
+    name: apache2
+    state: reloaded
+
+- name: restart apache
+  service:
+    name: apache2
+    state: restarted
+
+- name: reload php configuration
+  debug:
+     msg: "Here is some custom task to run after the roles have beeb executed"

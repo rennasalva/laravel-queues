@@ -1,0 +1,4 @@
+---
+- name: Install Apache and mod_php
+  command: /usr/local/bin/zendphpctl apache mod_php install
+  become: true

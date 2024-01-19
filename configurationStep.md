@@ -22,6 +22,8 @@
       - "/var/run/docker.sock:/var/run/docker.sock"
     * change sock permission 
         -  chmod 666 /var/run/docker.sock
+        -  sudo usermod -a -G docker jenkins
+
 
 5) Jenkins configuration
     * plugins

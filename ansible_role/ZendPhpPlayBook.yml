@@ -1,0 +1,51 @@
+- name: My App
+  hosts: alma
+  vars:
+    document_root: "/var/www/myAwesomeSite"
+    zend_app_version: "0.0.1"
+    zendphp_repo_username: "zend-ps-renato"
+    zendphp_repo_password: "rFK~APGTDhC+"
+  roles:
+    - role: ZendPHP
+      become: yes
+      vars:
+         vhost: mytestsite.local
+         vhost_config: ./roles/ZendPHP/templates/nginx-default.j2
+         fpm_config: ./roles/ZendPHP/templates/www.conf.js
+         fpm_config_overwrite: ./roles/ZendPHP/templates/99-site.ini.j2
+         webserver: nginx
+         php_version: 8.2
+         php_version_alias: 82
+         php_extensions: 
+           - xml
+           - mysql
+           - zip 
+           - intl 
+           - curl  
+           - mbstring 
+           - soap 
+           - ldap 
+           - redis 
+           - gd 
+           - pdo_mysql 
+           - bcmath 
+           - pcntl 
+           - calendar
+         php_directives:
+           error_log: /var/log/my_app_errors.log
+           error_reporting: E_ALL
+    - role: BuildExtensions
+      become: yes
+      vars:
+        src_packace: "./packages/"
+        instantclient_basic: "https://download.oracle.com/otn_software/linux/instantclient/2110000/instantclient-basic-linux.x64-21.10.0.0.0dbru.zip"
+        instantclient_sdk: "https://download.oracle.com/otn_software/linux/instantclient/2110000/instantclient-sdk-linux.x64-21.10.0.0.0dbru.zip"
+        oci_lts: "https://pecl.php.net/get/oci8-3.3.0.tgz"
+    # - role: ZendApp
+    #   become: yes
+    #   vars:
+    #     application_src: "./src/"
+  tasks:
+   - name: Some custom task to run after ZendPHP provisioning
+     debug:
+       msg: "Here is some custom task to run after the roles have beeb executed"

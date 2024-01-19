@@ -1,0 +1,12 @@
+---
+- name: install system package devel phpdevel
+  dnf: 
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - php82zend-php-devel  
+
+  become: true  
+# tasks file for build ZendPHP extensons
+- include_tasks: oracle.yml
+...

@@ -1,0 +1,57 @@
+---
+# tasks file for build ZendPHP extensons
+- name: install system package
+  dnf: 
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - libaio  
+    - systemtap-sdt-devel 
+  become: true  
+
+- name: create oracle 
+  file:
+    path: "/opt/oracle/oci8"
+    state: directory
+    mode: 0777
+    owner: root
+    group: root
+  become: true
+
+- name: Downloading & unarchiving instantclient-basic
+  unarchive:
+    src: "{{ instantclient_basic }}"
+    dest: /opt/oracle
+    remote_src: yes
+  become: true
+
+- name: Downloading & unarchiving instantclient-sdk
+  unarchive:
+    src: "{{ instantclient_sdk }}"
+    dest: /opt/oracle
+    remote_src: yes
+  become: true
+
+- name: Downloading & unarchiving oci8
+  unarchive:
+    src: "{{ oci_lts }}"
+    dest: /opt/oracle/oci8
+    remote_src: yes
+    extra_opts: [--strip-components=1]   
+    mode: 0777
+    owner: root
+    group: root
+  become: true
+
+- name: Configure oci8
+  shell:  "{{ item }}"
+  with_items:
+    - "echo '/opt/oracle/instantclient_21_10' > /etc/ld.so.conf.d/oracle-instantclient.conf && ldconfig"
+    - "export PHP_DTRACE=yes && cd /opt/oracle/oci8 && /opt/zend/php82zend/root/usr/bin/phpize  && ./configure --with-php-config=/opt/zend/php82zend/root/usr/bin/php-config --enable-dtrace --with-oci8=shared,instantclient,/opt/oracle/instantclient_21_10  && make install"
+    - "echo '; configuration for php oracle module' > /etc/opt/zend/php82zend/php.d/20-oci8.ini"
+    - "echo '; priority=20' >> /etc/opt/zend/php82zend/php.d/20-oci8.ini"
+    - "echo 'extension=oci8.so' >> /etc/opt/zend/php82zend/php.d/20-oci8.ini"
+  become: true
+
+        
+...

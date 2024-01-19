@@ -1,0 +1,85 @@
+---
+# tasks file for ZendPHP
+- name: PHP version and webserver
+  debug:
+   msg: "PHP: {{ php_version }}; Webserver: {{ webserver }}"
+
+- name: Add group "zendphp" to remote node
+  group:
+        name: zendphp
+        gid: 10000
+        state: present   
+
+- name: adding  user "zendphp" to remote node to group zendphp
+  user:
+      name: zendphp
+      group: zendphp
+      shell: /sbin/nologin
+      create_home: no
+      uid: 10001      
+
+- name: Get the zendphpctl utility
+  get_url:
+    dest: "/usr/local/bin/zendphpctl"
+    url: https://repos.zend.com/zendphp/zendphpctl
+    checksum: "sha256:{{ signature }}"
+    mode: 0755
+  vars:
+    signature: "{{ lookup('ansible.builtin.url', 'https://repos.zend.com/zendphp/zendphpctl.sig', split_lines=True) }}"
+  become: true
+
+- name: Install ZendPHP package repository
+  command: /usr/local/bin/zendphpctl repo install --account {{ zendphp_repo_username }} --password {{ zendphp_repo_password }}
+  become: true
+
+- name: Install ZendPHP
+  command: /usr/local/bin/zendphpctl php install {{ php_version }}
+  become: true
+
+- name: PHP extensions to be installed
+  debug:
+    msg: "PHP extensions to be installed: {{ php_extensions | join(' ') }}"
+
+- name: Install PHP extensions
+  command: "/usr/local/bin/zendphpctl ext install {{ php_extensions | join(' ') }}"
+  when: php_extensions
+  become: true
+
+- name: Add php-fpm Supervisor configuration
+  lineinfile:
+    path: /etc/supervisord.conf
+    line: "{{ item }}"
+    state: present
+    create: yes
+  loop:
+    - '[program:php-fpm]'
+    - 'command=/opt/zend/php82zend/root/usr/sbin/php-fpm'
+    - 'user:zendphp'
+
+# Install and configure Nginx Web server (default choice)
+- include_tasks: nginx.yml
+  when: webserver == "nginx"
+
+# Install and configure Apache Web Server (httpd if Red Hat)
+- include_tasks: apache.yml
+  when: webserver == "apache"
+
+- name: Update the php.ini directives
+  lineinfile:
+    path: "/etc/opt/zend/php{{ php_version_alias }}zend/php.ini"
+    regexp: "^{{ item.key }}"
+    line: "{{ item.key }} = {{ item.value }}"
+  loop: "{{ php_directives | dict2items }}"
+
+- name: Upload default fpm-config file 
+  template:
+    src: "{{ fpm_config }}"
+    dest: /etc/opt/zend/php82zend/php-fpm.d/www.conf
+  notify: reload php configuration  
+
+
+- name: Upload default fpm-config priority 
+  template:
+    src: "{{ fpm_config_overwrite }}"
+    dest: /etc/opt/zend/php82zend/php-fpm.d/99-site.ini
+  notify: reload php configuration  

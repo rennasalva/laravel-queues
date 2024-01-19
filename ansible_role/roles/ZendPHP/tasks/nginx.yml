@@ -1,0 +1,46 @@
+---
+- name: Install PHP-FPM
+  command: /usr/local/bin/zendphpctl fpm install
+
+- name: Install Nginx
+  dnf: 
+    name: nginx 
+    state: latest
+
+- name: Add nginx Supervisor configuration
+  lineinfile:
+    path: /etc/supervisord.conf
+    line: "{{ item }}"
+    state: present
+    create: yes
+  loop:
+    - '[program:nginx]'
+    - 'command=/usr/sbin/nginx -g "daemon off;"'
+    - 'user:nginx'
+
+# - name: Start Nginx
+#   service:
+#     name: nginx
+#     state: reload
+#     #state: started
+#     enabled: yes
+
+# - name: Check if the vhost parameter value is a file in controller machine or not
+#   local_action:
+#     module: "ansible.builtin.stat"
+#     path: "{{ vhost }}"
+#   become: no
+#   register: vhost_file
+
+# - name: Debug vhost_file
+#   debug:
+#     msg: "The file owner is {{ vhost_file.stat.path }} -- {{ vhost_file.stat.pw_name }} -- {{ vhost_file.stat.exists }}"
+#   when: vhost_file.stat.exists 
+
+- name: Upload site config based on the NGINX config template
+  template:
+    src: "{{ vhost_config }}"
+    dest: /etc/nginx/conf.d/default.conf
+  notify: reload nginx
+
+

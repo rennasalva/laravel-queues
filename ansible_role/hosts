@@ -1,0 +1,4 @@
+[alma]
+dev0 ansible_host=zend_php_almalinx ansible_user=remote_user become_user=root ansible_private_key_file=/var/jenkins_home/ansible/remote-key
+
+

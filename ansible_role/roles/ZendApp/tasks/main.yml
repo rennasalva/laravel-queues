@@ -1,0 +1,43 @@
+---
+# tasks file for ZendApp
+
+- name: Application src path
+  debug:
+    msg: "Application source directory: {{ application_src }}"
+
+- name: Playbook directory
+  debug:
+    msg: "Playbook directory: {{ playbook_dir }}"
+
+- name: Handling ZPK file
+  block:
+    - name: Load data from zpk file
+      local_action:
+        module: zpk
+        zpkFile: "{{ zpkFile }}"
+      register: zpk_data
+
+    - name: Dump zpk_data
+      debug:
+        msg: '{{ zpk_data }}'
+
+    - name: Debug appdir value
+      debug:
+        msg: "{{ zpk_data['zpk']['appdir'] }}"
+
+    - name: Extract source from zpk to local application source directory
+      local_action:
+        module: ansible.builtin.unarchive
+        src: "{{ zpkFile }}"
+        dest: "{{ application_src }}"
+        include: "{{ zpk_data['zpk']['appdir'] }}/*"
+
+  become: no
+  when: zpkFile
+
+- name: Copy over the application source code
+  ansible.builtin.synchronize:
+    src: "{{ application_src }}"
+    dest: "{{ document_root }}"
+    delete: true
+  become: true

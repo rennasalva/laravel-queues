@@ -1,0 +1,9 @@
+- name: Role testing playbook
+  hosts: virtualmachines
+  tasks:
+   - name: Print input variables
+     debug:
+       msg: "roleName -> {{ roleName }}; webserver -> {{ webserver }}"
+   - name: Zend Application deployment
+     import_role:
+       name: "{{ roleName }}"
