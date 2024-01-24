@@ -244,14 +244,7 @@ def return_list(){
     builds.add('a')
     builds.add('b')
     builds.add('c')
-    
-    def jjob = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
-    jjob.builds.each {
-        if (it.result == hudson.model.Result.SUCCESS) {
-            builds.add(it.displayName[1..-1])
-        }
-    }
-    return builds;
+    return builds
 
 }
 
