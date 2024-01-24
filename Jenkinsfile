@@ -244,7 +244,7 @@ def return_list(){
     def jobName = "pipeline-laravel-repo"
     def jobjk = jenkins.getItem(jobName)
     def builds = []
-    builds.add('a')
+    builds.add(jobjk.getLastSuccessfulBuild())
     builds.add('b')
     builds.add('c')
     return builds
