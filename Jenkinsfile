@@ -240,6 +240,7 @@ pipeline {
 
 
 def return_list(){
+    def jenkins = Jenkins.getInstance()
     def builds = []
     builds.add('a')
     builds.add('b')
