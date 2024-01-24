@@ -241,6 +241,8 @@ pipeline {
 
 def return_list(){
     def jenkins = Jenkins.getInstance()
+    def jobName = "pipeline-laravel-repo"
+    def jobjk = jenkins.getItem(jobName)
     def builds = []
     builds.add('a')
     builds.add('b')
