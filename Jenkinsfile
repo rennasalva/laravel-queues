@@ -1,9 +1,4 @@
-pipeline {
-  agent any
-  environment{
-      build = "buils-${JOB_NAME}-${BUILD_NUMBER}"
-  }
-  script{
+ def previus_builds{
     def builds = []
     def job = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
     job.builds.each {
@@ -11,7 +6,15 @@ pipeline {
             builds.add(it.displayName[1..-1])
         }
     }
+    return job,
   }
+
+pipeline {
+  agent any
+  environment{
+      build = "buils-${JOB_NAME}-${BUILD_NUMBER}"
+  }
+
   parameters {
         choice(
                 choices: ['ALL', 'ONLY APP','ONLY STATIC FILE','ONLY CLI'], 
@@ -21,7 +24,7 @@ pipeline {
                 choices: ['dev', 'prod','all'], 
                 name: 'deploy_server_group'
         )
-         choice(choices: builds ,
+         choice(choices:  script{previus_builds()} ,
                     description: '',
                     name: 'BUILD')
         booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
