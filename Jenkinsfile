@@ -245,13 +245,9 @@ def return_list(){
     def jobjk = jenkins.getItem(jobName)
     def builds = []
     
-    builds.add(jobjk.getLastSuccessfulBuild())
-    builds.add('b')
-    builds.add('c')
-
    jobjk.builds.each {
     if (it.result == hudson.model.Result.SUCCESS) {
-        builds.add(it.displayName[1..-1])
+        builds.add("buld: ${it.displayName[1..-1]}")
     }
 }
 
