@@ -14,9 +14,9 @@ pipeline {
                 choices: ['dev', 'prod','all'], 
                 name: 'deploy_server_group'
         )
-         choice(choices: {return_list()} ,
-                    description: '',
-                    name: 'BUILD')
+        //  choice(choices: {return_list()} ,
+        //             description: '',
+        //             name: 'BUILD')
         booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
      
     }
