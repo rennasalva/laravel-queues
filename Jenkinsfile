@@ -240,13 +240,15 @@ pipeline {
 
 
 def return_list(){
-     def job = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
-    if ("${JOB_NAME}".contains("bla")){
-        env.list_users = "1\n 2\n 3\n"
-    }else{
-        env.list_users = "a\n b\n c\n"
+    def job = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
+    def job = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
+    job.builds.each {
+        if (it.result == hudson.model.Result.SUCCESS) {
+            builds.add(it.displayName[1..-1])
+        }
     }
-    return env.list_users
+    return builds;
+
 }
 
 //  def previusbuilds {
