@@ -3,26 +3,6 @@ pipeline {
   agent any
   environment{
       build = "buils-${JOB_NAME}-${BUILD_NUMBER}"
-
-      def return_list(){
-    def builds = []
-    def jenkins = Jenkins.getInstance()
-    def jobName = "pipeline-laravel-repo"
-    def job = jenkins.getItem(jobName)
-    def lastBuild = job.getLastSuccessfulBuild()
-    builds.add('a')
-    builds.add('b')
-    builds.add('c')
-    return builds;
-    def jjob = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
-    jjob.builds.each {
-        if (it.result == hudson.model.Result.SUCCESS) {
-            builds.add(it.displayName[1..-1])
-        }
-    }
-    return builds;
-
-}
   }
 
   parameters {
@@ -259,7 +239,21 @@ pipeline {
 }
 
 
+def return_list(){
+    def builds = []
+    builds.add('a')
+    builds.add('b')
+    builds.add('c')
+    
+    def jjob = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
+    jjob.builds.each {
+        if (it.result == hudson.model.Result.SUCCESS) {
+            builds.add(it.displayName[1..-1])
+        }
+    }
+    return builds;
 
+}
 
 //  def previusbuilds {
 //     def builds = []
