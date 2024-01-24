@@ -241,7 +241,11 @@ pipeline {
 
 def return_list(){
     def builds = []
-    builds.add('a')
+    def jenkins = Jenkins.getInstance()
+    def jobName = "pipeline-laravel-repo"
+    def job = jenkins.getItem(jobName)
+    def lastBuild = job.getLastSuccessfulBuild()
+    builds.add(lastBuild)
     builds.add('b')
     builds.add('c')
     return builds;
