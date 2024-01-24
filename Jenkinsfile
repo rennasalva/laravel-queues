@@ -240,6 +240,7 @@ pipeline {
 
 
 def return_list(){
+    def builds = []
     def jjob = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
     jjob.builds.each {
         if (it.result == hudson.model.Result.SUCCESS) {
