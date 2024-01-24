@@ -1,13 +1,3 @@
- def previus_builds{
-    def builds = []
-    def job = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
-    job.builds.each {
-        if (it.result == hudson.model.Result.SUCCESS) {
-            builds.add(it.displayName[1..-1])
-        }
-    }
-    return job,
-  }
 
 pipeline {
   agent any
@@ -24,7 +14,7 @@ pipeline {
                 choices: ['dev', 'prod','all'], 
                 name: 'deploy_server_group'
         )
-         choice(choices:  script{previus_builds()} ,
+         choice(choices: builds ,
                     description: '',
                     name: 'BUILD')
         booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
@@ -247,3 +237,15 @@ pipeline {
      }
   }   
 }
+
+
+ def previus_builds{
+    def builds = []
+    def job = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
+    job.builds.each {
+        if (it.result == hudson.model.Result.SUCCESS) {
+            builds.add(it.displayName[1..-1])
+        }
+    }
+    return job
+  }
