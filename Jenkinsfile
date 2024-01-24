@@ -240,6 +240,7 @@ pipeline {
 
 
 def return_list(){
+     def job = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
     if ("${JOB_NAME}".contains("bla")){
         env.list_users = "1\n 2\n 3\n"
     }else{
