@@ -239,7 +239,7 @@ pipeline {
 }
 
 
- def previus_builds{
+ def previusbuilds{
     def builds = []
     def job = jenkins.model.Jenkins.instance.getItem('pipeline-laravel-repo')
     job.builds.each {
