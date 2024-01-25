@@ -247,7 +247,7 @@ def return_list(){
     
    jobjk.builds.each {
     if (it.result == hudson.model.Result.SUCCESS) {
-        builds.add("buld: ${it.displayName[1..-1]}")
+        builds.add("buld:  ${it.displayName[1..-1]}  ${ it.getNumber()}")
     }
 }
 
