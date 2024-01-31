@@ -6,7 +6,6 @@ pipeline {
   }
 
   parameters {
-       
         choice(
                 choices: ['ALL', 'ONLY APP','ONLY STATIC FILE','ONLY CLI'], 
                 name: 'deploy_policy'
@@ -242,7 +241,6 @@ pipeline {
 
 
 def return_list(){
-  
     def jobName = "pipeline-laravel-repo"
     def jobjk = jenkins.getItem(jobName)
     def builds = []
