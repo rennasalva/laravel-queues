@@ -6,9 +6,7 @@ pipeline {
   }
 
   parameters {
-        booleanParam(name: 'Refresh',
-                    defaultValue: false,
-                    description: 'Read Jenkinsfile and exit.')
+       
         choice(
                 choices: ['ALL', 'ONLY APP','ONLY STATIC FILE','ONLY CLI'], 
                 name: 'deploy_policy'
