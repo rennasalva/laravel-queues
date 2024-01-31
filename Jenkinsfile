@@ -241,7 +241,7 @@ pipeline {
 
 
 def return_list(){
-    def jobName = "pipeline-laravel-repo"
+    def jobName = "pipeline_laravel_repo"
     def jobjk = jenkins.getItem(jobName)
     def builds = []
     
