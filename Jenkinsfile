@@ -6,6 +6,9 @@ pipeline {
   }
 
   parameters {
+        booleanParam(name: 'Refresh',
+                    defaultValue: false,
+                    description: 'Read Jenkinsfile and exit.')
         choice(
                 choices: ['ALL', 'ONLY APP','ONLY STATIC FILE','ONLY CLI'], 
                 name: 'deploy_policy'
@@ -17,6 +20,7 @@ pipeline {
          choice(choices: return_list() ,
                     description: '',
                     name: 'BUILD')
+
         booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
      
     }
@@ -240,7 +244,8 @@ pipeline {
 
 
 def return_list(){
-    def jenkins = Jenkins.getInstance()
+    def jenkins = 
+    
     def jobName = "pipeline-laravel-repo"
     def jobjk = jenkins.getItem(jobName)
     def builds = []
@@ -251,7 +256,7 @@ def return_list(){
     }
 }
 
-    return builds
+  return builds
 
 }
 
