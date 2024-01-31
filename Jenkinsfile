@@ -22,7 +22,7 @@ pipeline {
                 script('["choice1", "choice2"]')
                 fallbackScript('"fallback choice"')
             }
-        }
+      
     }
 
         booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
