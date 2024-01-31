@@ -16,7 +16,7 @@ properties([
                         //  def words = new File('/var/jenkins_home/words.txt') as String[]
                         //  return words
                         def list = []
-                          new File("/var/jenkins_home/words.txt").splitEachLine(/\s+/){row->
+                          new File('/var/jenkins_home/words.txt').splitEachLine(/\s+/){row->
                               list.add(${row[0]})
                           }
 
