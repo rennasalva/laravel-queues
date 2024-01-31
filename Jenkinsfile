@@ -1,4 +1,70 @@
 
+properties([
+    parameters([
+        [$class: 'ChoiceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            description: 'Select a choice',
+            filterLength: 1,
+            filterable: false,
+            name: 'component',
+            script: [$class: 'GroovyScript',
+                fallbackScript: [classpath: [], sandbox: false, script: 'return ["Could not get component"]'],
+                script: [classpath: [], sandbox: false, 
+                    script: """
+                         import groovy.json.JsonSlurperClassic
+                            def list = []
+                            def connection = new URL("https://run.mocky.io/v3/e406ee99-be79-4d50-818f-b186dad7f4f4")
+                            .openConnection() as HttpURLConnection
+                            connection.setRequestProperty('Accept', 'application/json')
+                            def json = connection.inputStream.text
+                            data = new JsonSlurperClassic().parseText(json)
+                            data.each { component ->
+                                list += component.name
+                            }
+                            return list
+                    """
+                ]]],
+                , 
+    [$class: 'CascadeChoiceParameter', 
+        choiceType: 'PT_SINGLE_SELECT', 
+        description: 'Select Version', 
+        filterLength: 1, 
+        filterable: true, 
+        name: 'version', 
+        referencedParameters: 'component', 
+        script: [
+            $class: 'GroovyScript', 
+            fallbackScript: [
+                classpath: [], 
+                sandbox: false, 
+                script: 
+                    'return[\'Could not get version\']'
+            ], 
+            script: [
+                classpath: [], 
+                sandbox: false, 
+                script: 
+                    """
+                            import groovy.json.JsonSlurperClassic
+                            def list = []
+                            def connection = new URL("https://run.mocky.io/v3/c782ae33-98a2-4994-acc4-14c0b5cc7655")
+                            .openConnection() as HttpURLConnection
+                            connection.setRequestProperty('Accept', 'application/json')
+                            def json = connection.inputStream.text
+                            data = new JsonSlurperClassic().parseText(json)
+                            data.data.each { it ->
+                              if  (it.component == component ) {
+                                	list += it.version
+                              		}
+                               }
+                            return list
+                            """
+            ]
+        ]
+    ]   
+    ])
+])
+
 pipeline {
   agent any
   environment{
@@ -14,17 +80,7 @@ pipeline {
                 choices: ['dev', 'prod','all'], 
                 name: 'deploy_server_group'
         )
-        activeChoiceParam('CHOICE-1') {
-            description('Allows user choose from multiple choices')
-            filterable()
-            choiceType('SINGLE_SELECT')
-            groovyScript {
-                script('["choice1", "choice2"]')
-                fallbackScript('"fallback choice"')
-            }
-      
-    }
-
+  
         booleanParam(name: 'skip_test', defaultValue: true, description: 'Set to true to skip the test stage')
      
     }
