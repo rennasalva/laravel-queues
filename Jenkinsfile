@@ -14,7 +14,7 @@ properties([
                    sandbox: false, 
                     script: """
                          def words = new File('/var/jenkins_home/words.txt') as String[]
-                         return word
+                         return words
                     """
                 ]]],
                 , 
