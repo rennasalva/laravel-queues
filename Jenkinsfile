@@ -13,13 +13,11 @@ properties([
                    classpath: [], 
                    sandbox: false, 
                     script: """
-                        //  def words = new File('/var/jenkins_home/words.txt') as String[]
-                        //  return words
-                       def words = []
+                        def words = []
                         new File( '/var/jenkins_home/words.txt' ).eachLine { line ->
                             words << line
                         }
-                        retrun words
+                        return words
                     """
                 ]]],
                 , 
