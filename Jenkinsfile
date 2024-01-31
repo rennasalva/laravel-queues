@@ -9,19 +9,12 @@ properties([
             name: 'component',
             script: [$class: 'GroovyScript',
                 fallbackScript: [classpath: [], sandbox: false, script: 'return ["Could not get component"]'],
-                script: [classpath: [], sandbox: false, 
+                script: [
+                   classpath: [], 
+                   sandbox: false, 
                     script: """
-                         import groovy.json.JsonSlurperClassic
-                            def list = []
-                            def connection = new URL("https://run.mocky.io/v3/e406ee99-be79-4d50-818f-b186dad7f4f4")
-                            .openConnection() as HttpURLConnection
-                            connection.setRequestProperty('Accept', 'application/json')
-                            def json = connection.inputStream.text
-                            data = new JsonSlurperClassic().parseText(json)
-                            data.each { component ->
-                                list += component.name
-                            }
-                            return list
+                         def words = new File('/var/jenkins_home/words.txt') as String[]
+                         return word
                     """
                 ]]],
                 , 
